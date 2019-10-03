@@ -29,11 +29,27 @@ public class Test : MonoBehaviour
     [Header("顏色")]
     public Color red = new Color(0.5f, 0.6f, 0.7f);
 
+
+    //非靜態類別
     public AudioClip sound;
     public Camera cam;
     public Light lig;
     public Transform camPos;
     public GameObject obj;
+    //靜態類別,不能宣告成欄位
+    //public Debug deb;
     public Debug deb;
+
+    private void Start()
+    {   //非靜態類別
+        //Camera.deth = 10.5f; //錯誤寫法
+
+        cam.depth = 10.5f;
+
+
+        //靜態類別
+        Debug.Log("海狗");
+
+    }
 
 }
