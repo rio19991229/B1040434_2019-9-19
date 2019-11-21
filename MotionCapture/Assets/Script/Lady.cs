@@ -9,7 +9,8 @@ public class Lady : MonoBehaviour
 
     [Header("速度"), Range(0f, 50f)]
     public float speed = 10f;
-
+    [Header("轉向速度"), Range(0f, 100f)]
+    public float turn = 100f;
 
     [Header("動畫控制器")]
 
@@ -31,25 +32,54 @@ public class Lady : MonoBehaviour
 
     private void Update()
     {
+        Attack();
+        Turn();
+    }
+
+
+    private void FixedUpdate()
+    {
         Walk();
         Jump();
-        Attack();
     }
+
+
     // 定義方法
     // 修飾詞 傳回類型 方法名稱 ( 參數 ) { 敘述 }
     // void 無回傳
 
 
     /// <summary>
-    /// 走路
+    /// 前後左右走路
     /// </summary>
     private void Walk()
     {
         ani.SetBool(aniWalk, Input.GetAxis("Vertical") != 0|| Input.GetAxis("Horizontal") != 0);
         //rig.AddForce(0, 0, Input.GetAxisRaw("Vertical") * speed);             // 以世界座標移動
-        rig.AddForce(transform.forward * Input.GetAxisRaw("Vertical") * speed); // 以區域座標移動
-    }    
-   
+        //rig.AddForce(transform.forward * Input.GetAxisRaw("Vertical") * speed); // 以區域座標移動
+
+        ///transform.forward(0,0,1)
+        //transform.right(1,0,0)
+        //transform.up(0,1,0)
+
+        rig.AddForce(transform.forward * Input.GetAxisRaw("Vertical") * speed + transform.right * Input.GetAxisRaw("Horizontal") * speed);
+
+
+    }
+
+
+    /// <summary>
+    /// 左右旋轉
+    /// </summary>
+    private void Turn()
+    {
+        float x = Input.GetAxis("Mouse X");   // 滑鼠左右，左 -1、右 1
+        //print("玩家滑鼠 X：" + x);
+        transform.Rotate(0, x * turn * Time.deltaTime, 0);
+    }
+
+
+
     /// <summary>
     /// 攻擊
     /// </summary>
