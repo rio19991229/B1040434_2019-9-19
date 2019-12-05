@@ -11,6 +11,8 @@ public class Lady : MonoBehaviour
     public float speed = 10f;
     [Header("轉向速度"), Range(0f, 100f)]
     public float turn = 100f;
+    [Header("血量"), Range(100,500)]
+    public float HP = 100;
 
     [Header("動畫控制器")]
 
@@ -22,7 +24,28 @@ public class Lady : MonoBehaviour
 
 
 
+    public bool isAttack
+    {
+        get
+        {
+            return ani.GetCurrentAnimatorStateInfo(0).IsName("攻擊01");
+        }
 
+    }
+
+
+    public bool isHurt
+    {
+        get
+        {
+            return ani.GetCurrentAnimatorStateInfo(0).IsName("受傷");
+        }
+
+
+
+    }
+
+    
     private void Start()
     {
         ani = GetComponent<Animator>();
@@ -32,6 +55,13 @@ public class Lady : MonoBehaviour
 
     private void Update()
     {
+        // 判斷動畫狀態
+        //print("是否為攻擊動畫：" + isAttack);
+        //print("是否為受傷動畫：" + isHurt);
+
+        if (isAttack || isHurt) return;  //跳出
+
+
         Attack();
         Turn();
     }
@@ -39,11 +69,23 @@ public class Lady : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (isAttack || isHurt) return;  //跳出
+
         Walk();
         Jump();
     }
 
 
+    // 觸發事件：碰到勾選 IsTrigger 碰撞器開始時候執行一次
+    private void OnTriggerEnter(Collider other)
+    {
+        print(other.tag);
+
+        if (other.tag == "陷阱")
+        {
+            Hurt();
+        }
+    }
     // 定義方法
     // 修飾詞 傳回類型 方法名稱 ( 參數 ) { 敘述 }
     // void 無回傳
@@ -111,6 +153,8 @@ public class Lady : MonoBehaviour
     {
 
       ani.SetTrigger(aniHurt);
+        HP -= 25;
+        if (HP <= 0) Dead();
 
     }
 
@@ -122,6 +166,10 @@ public class Lady : MonoBehaviour
 
         ani.SetTrigger(aniDead);
 
+        //this 此腳本
+        //enabled 啟動
+
+        this.enabled = false;
     }
 
 
